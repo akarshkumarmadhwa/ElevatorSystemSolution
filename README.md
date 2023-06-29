@@ -16,7 +16,7 @@ git clone https://github.com/akarshkumarmadhwa/ElevatorSystemSolution.git
 cd ElevatorSystemSolution/elevator_system
 ```
 
-3. Please read the special note point number 2 below, and go through the entire notes once.
+3. Please make sure you enter the correct directoryy containing the project.
 
 4. Install the requirements
 ```
