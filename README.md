@@ -1,6 +1,7 @@
 # ElevatorSystemSolution
 
 The elevator system with N number of elevator is to decide whether the elevator should go up, go down, or stop. We'll ignore a lot of what goes into a real world elevator, like physics, maintenance overrides, and optimizations for traffic patterns. Now some user comes in and makes a request to an elevator. The elevator automatically moves UP/DOWN as per the request of the user. The status of an elevator like it is currently operational or not can be updated using API calls.
+The status of an elevator like it is currently operational or not operational, can be updated using API calls. Visit the [Api_details.md](https://github.com/akarshkumarmadhwa/ElevatorSystemSolution/blob/main/elevator_system/Api_details.md) for further information.
 
 ## Installation : 
 1. Make a python virtual enviornment in your preferred Linux/WSL2...any system
