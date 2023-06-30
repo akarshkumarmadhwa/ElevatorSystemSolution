@@ -17,7 +17,7 @@ class ElevatorSystemView(APIView):
 
     def get(self, request):
         try:
-            elev_sys_id = request.query_params.get("id", None)
+            elev_sys_id = request.query_params.get("elev_sys_id", None)
             if elev_sys_id:
                 elev_sys_id = elev_sys_id.split(",")
                 query_set = ElevatorSystem.objects.filter(id__in=elev_sys_id)
@@ -51,12 +51,12 @@ class ElevatorView(APIView):
     def get(self, request):
         try:
             sys_id = request.query_params.get("sys_id", None)
-            elev_id = request.query_params.get("elev_id", None)
+            elev_num = request.query_params.get("elev_num", None)
             if not sys_id:
                 return Response(data={"ElevatorSystem ID sys_id is required!"}, status=status.HTTP_400_BAD_REQUEST)
-            if elev_id:
-                elev_id = elev_id.split(",")
-                query_set = Elevator.objects.filter(id__in=elev_id, elevator_system__id=sys_id)
+            if elev_num:
+                elev_num = elev_num.split(",")
+                query_set = Elevator.objects.filter(elevator_number__in=elev_num, elevator_system__id=sys_id)
             else:
                 query_set = Elevator.objects.filter(elevator_system__id=sys_id)
             serializer = ElevatorSerializer(query_set, many=True)
@@ -66,10 +66,15 @@ class ElevatorView(APIView):
 
     def put(self, request):
         try:
-            elev_id = request.query_params.get("elev_id", None)
-            if not elev_id:
-                return Response(data={"Elevator ID elev_id is required and to be passed in url header!"}, status=status.HTTP_400_BAD_REQUEST)
-            query_set = Elevator.objects.get(id=elev_id)
+            sys_id = request.query_params.get("sys_id", None)
+            elev_num = request.query_params.get("elev_num", None)
+            data = request.data
+            data["elevator_number"] = elev_num
+            if not sys_id:
+                return Response(data={"ElevatorSystem ID sys_id is required!"}, status=status.HTTP_400_BAD_REQUEST)
+            if not elev_num:
+                return Response(data={"Elevator number elev_num is required and to be passed in url header!"}, status=status.HTTP_400_BAD_REQUEST)
+            query_set = Elevator.objects.get(elevator_number=elev_num)
             serializer = ElevatorSerializer(query_set, data=request.data)
             if serializer.is_valid():
                 serializer.save()
@@ -116,6 +121,7 @@ class CreateElevatorRequest(APIView):
         if serializer.is_valid():
             elevator_system_req = serializer.save()
             elevator_system_req.elevator = queryset
+            elevator_system_req.save()
             return Response(status=status.HTTP_201_CREATED)
         return Response(data=serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     except Exception as e:
@@ -126,7 +132,8 @@ class FetchElevatorDestination(APIView):
   Fetch the next destination floor for a given elevator
   along with status moving up/down
   """
-  def get(self, request,id,pk):
+  def get(self, request):
+    elevator_object = None
     sys_id = request.query_params.get("sys_id", None)
     elev_num = request.query_params.get("elev_num", None)
 
@@ -136,7 +143,7 @@ class FetchElevatorDestination(APIView):
     ).order_by("id")
 
     if elevator_objects:
-       elevator_object = elevator_objects.first()
+      elevator_object = elevator_objects.first()
 
     requests_pendings = ElevatorRequest.objects.filter(
       elevator = elevator_object,
@@ -152,8 +159,11 @@ class FetchElevatorDestination(APIView):
 
     if not elevator_object:
       return_dict = {
-        "running" : False,
-        "destination_floor" : "The Elevator number is incorrect"
+        "moving_up": None,
+        "moving_down": None, 
+        "running" : None,
+        "destination_floor" : None,
+        "comment": "The Elevator number or elevator system id is incorrect or missing!"
       }
       
     elif not elevator_object.is_operational:
@@ -162,7 +172,7 @@ class FetchElevatorDestination(APIView):
         "moving_down": None,   
         "running" : False,
         "destination_floor" : None,
-        "comment": "The Elevator is not operational"
+        "comment": "The Elevator is not operational!"
       }
     elif not requests_pendings:
       return_dict = {
@@ -170,7 +180,7 @@ class FetchElevatorDestination(APIView):
         "moving_down": None,   
         "running" : False,
         "destination_floor" : None,
-        "comment": "The Elevator is not running currently, No pending requests"
+        "comment": "The Elevator is not running currently, No pending requests!"
       }
     elif requests_pending.requested_floor == elevator_object.current_floor:
       return_dict = {

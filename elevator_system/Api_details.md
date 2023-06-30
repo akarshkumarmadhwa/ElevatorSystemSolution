@@ -76,7 +76,7 @@ Get details of a specific elevator, given its elevator system id and elevator nu
 #### Query Parameter
 ```
 {elevator-system-id} = ID of the elevator system
-{elevator-id} = Id of the elevator in order to view details of particular elevator (elev_id)
+{elevator-number} = Elevator unique number of the elevator in order to view details of particular elevator (elev_num)
 ```
 
 #### Response Example
@@ -100,17 +100,15 @@ Update details of a specific elevator, open/close Door, mark elevator as operati
 #### Query Parameter
 ```
 {elevator-system-id} = ID of the elevator system
-{elevator-id} = Id of the elevator in order to view details of particular elevator (elev_id)
+{elevator-number} = Elevator unique number of the particular elevator (elev_num)
 ```
 #### Request Body Schema
 ```
 REQUEST BODY SCHEMA: application/json
-elevator_number   - required integer (Elevator number)
 current_floor	    - integer (Current floor)
 is_operational	  - boolean (Is operational)
 is_door_open	    - boolean (Is door open)
 running_status	  - integer (Running status)Expected numbers : (1 , 0 , -1)
-elevator_system   - required integer (Elevator system)
 ```
 #### Response Example
 ```
