@@ -2,27 +2,16 @@ from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from rest_framework.viewsets import ViewSet
-from rest_framework.generics import ListAPIView
 from elevator.models import Elevator, ElevatorRequest, ElevatorSystem
 
 from elevator.serializers import ElevatorRequestSerializer, ElevatorRequestSerializerAll, ElevatorSystemSerializer, ElevatorSerializer
 from elevator.utils import create_elevators
-from rest_framework.pagination import PageNumberPagination
 
 
 class ElevatorSystemView(APIView):
     """
     This api is for listing the elevator systems as well as for creating one along with initializing the elevators 
     with provided number of elevator as post data.
-    Input for POST:-
-        {
-        "system_name": "demo",
-        "max_floor": 5,
-        "number_of_elevators": 5
-    }
-    Input for GET (to view particular system details):-
-        elevatorsystem id to be passed as query parameter
     """
     http_method_names = ["get", "post"]
 
