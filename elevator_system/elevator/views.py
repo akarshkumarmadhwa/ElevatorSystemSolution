@@ -74,7 +74,7 @@ class ElevatorView(APIView):
                 return Response(data={"ElevatorSystem ID sys_id is required!"}, status=status.HTTP_400_BAD_REQUEST)
             if not elev_num:
                 return Response(data={"Elevator number elev_num is required and to be passed in url header!"}, status=status.HTTP_400_BAD_REQUEST)
-            query_set = Elevator.objects.get(elevator_number=elev_num)
+            query_set = Elevator.objects.get(elevator_number=elev_num, elevator_system__id=sys_id)
             serializer = ElevatorSerializer(query_set, data=request.data)
             if serializer.is_valid():
                 serializer.save()
