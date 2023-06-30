@@ -25,7 +25,7 @@ SECRET_KEY = 'ak^)9r5z6lj11q(mijhh-6ynersp=7)x$kx&omy04%3wt9g960'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"]
 
 
 # Application definition
@@ -37,6 +37,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django_extensions',
+    'django_filters',
+    'rest_framework',
+    'elevator',
 ]
 
 MIDDLEWARE = [
@@ -75,8 +79,23 @@ WSGI_APPLICATION = 'elevator_system.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'elevator_system',
+        'USER': 'akarsh',
+        'PASSWORD': 'akarsh@1234',
+        'HOST': 'localhost',
+        'PORT': '5432',
+    }
+}
+
+# Configure the caching (Redis)
+CACHES = {
+    'default': {
+        'BACKEND': 'django_redis.cache.RedisCache',
+        'LOCATION': 'redis://localhost:6379/1',
+        'OPTIONS': {
+            'CLIENT_CLASS': 'django_redis.client.DefaultClient',
+        }
     }
 }
 
