@@ -35,7 +35,9 @@ class Elevator(models.Model):
     (GOING_DOWN, GOING_DOWN)
   )
 
-  elevator_system = models.ForeignKey(ElevatorSystem , on_delete=models.CASCADE)
+  elevator_system = models.ForeignKey(ElevatorSystem , null=True,
+        on_delete=models.CASCADE,
+        related_name="elevator")
 
   elevator_number = models.IntegerField()
   current_floor = models.PositiveSmallIntegerField(default=0)
@@ -58,7 +60,7 @@ class ElevatorRequest(models.Model):
   request an elevator that doesn't exist.
   '''
 
-  elevator = models.ForeignKey(Elevator, on_delete=models.CASCADE)
+  elevator = models.ForeignKey(Elevator, null=True, on_delete=models.CASCADE, related_name="elevator_request")
   requested_floor = models.PositiveSmallIntegerField()
   destination_floor = models.PositiveSmallIntegerField()
   request_time = models.DateTimeField(auto_now_add=True)
