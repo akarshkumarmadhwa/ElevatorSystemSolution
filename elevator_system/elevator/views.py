@@ -90,8 +90,6 @@ class CreateElevatorRequest(APIView):
   The inputs of requested and destinatiom floor is sent with
   the form-data.
   """
-  filter_backends = [DjangoFilterBackend]
-  filterset_fields = ['is_active']
 
   def get(self, request):
     sys_id = request.query_params.get("sys_id", None)
